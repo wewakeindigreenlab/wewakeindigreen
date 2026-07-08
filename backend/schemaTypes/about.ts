@@ -34,25 +34,29 @@ export default defineType({
     }),
 
     // Stat bars. `width` is a CSS width (e.g. "78%") used for the fill bar.
-    defineField({
-      name: 'stats',
-      title: 'Stat bars',
-      type: 'array',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            defineField({name: 'label', title: 'Label', type: 'string'}),
-            defineField({name: 'value', title: 'Value', type: 'string'}),
-            defineField({name: 'width', title: 'Bar width (e.g. "78%")', type: 'string'}),
-          ],
-        },
-      ],
-    }),
+    // defineField({
+    //   name: 'stats',
+    //   title: 'Stat bars',
+    //   type: 'array',
+    //   of: [
+    //     {
+    //       type: 'object',
+    //       fields: [
+    //         defineField({name: 'label', title: 'Label', type: 'string'}),
+    //         defineField({name: 'value', title: 'Value', type: 'string'}),
+    //         defineField({name: 'width', title: 'Bar width (e.g. "78%")', type: 'string'}),
+    //       ],
+    //     },
+    //   ],
+    // }),
 
-    // Image collage on the right.
+    // Three-image collage on the right.
+    //  - image1: the big card (top-left, asymmetric)
+    //  - image2: smaller card (bottom-right, overlaps)
+    //  - image3: third card (bottom-left, added for the SDG trio)
     defineField({name: 'image1', title: 'Image 1 (large)', type: 'imageOrUrl'}),
     defineField({name: 'image2', title: 'Image 2 (small)', type: 'imageOrUrl'}),
+    defineField({name: 'image3', title: 'Image 3 (small)', type: 'imageOrUrl'}),
 
     // Floating "3 UN SDGs Addressed" card.
     defineField({name: 'sdgCardNumber', title: 'SDG card big number', type: 'string'}),
