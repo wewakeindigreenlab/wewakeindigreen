@@ -667,7 +667,7 @@ export const siteSettingsFallback: SiteSettings = {
 };
 
 /**
- * Helper that merges fetched data with a fallback object, field
+ * Helper tthat merges fetched data with a fallback object, field
  * by field. Empty/undefined fetched values fall back. This lets
  * editors fill the CMS gradually without breaking the site.
  */
