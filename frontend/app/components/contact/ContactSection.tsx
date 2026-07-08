@@ -22,7 +22,7 @@
  * because the iframe absorbs the response).
  */
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -53,6 +53,25 @@ export default function ContactSection({ data, site }: Props) {
   const [topic, setTopic] = useState("");
   const [message, setMessage] = useState("");
 
+  // SPAM PROTECTION — layer 1: honeypot field
+  // ------------------------------------------------------------
+  // Hidden input that real users can't see. Bots reading the DOM
+  // fill every input they find, so a filled honeypot is a
+  // near-certain signal that the submitter is a bot.
+  const [honeypot, setHoneypot] = useState("");
+
+  // SPAM PROTECTION — layer 2: minimum time on page
+  // ------------------------------------------------------------
+  // Real humans take at least a few seconds to fill the form.
+  // Bots submit within milliseconds of page load. We record when
+  // the form component mounted and reject submissions that come
+  // in faster than MIN_FILL_MS.
+  const MIN_FILL_MS = 3000; // 3 seconds
+  const mountedAtRef = useRef<number>(0);
+  useEffect(() => {
+    mountedAtRef.current = Date.now();
+  }, []);
+
   // UX states for the submit button.
   // idle | sending | success | error
   const [status, setStatus] = useState<
@@ -63,12 +82,31 @@ export default function ContactSection({ data, site }: Props) {
 
   /**
    * Submit handler:
-   *  - simple required-field check
+   *  - required-field check
+   *  - honeypot check (bot filled the invisible field)
+   *  - minimum time-on-page check (bot submitted too fast)
    *  - submit using the hidden iframe trick so Google's lack of
    *    CORS headers doesn't break the request
    *  - reset the form on success
    */
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Bot check 1 — honeypot. If filled, silently pretend success
+    // (don't hint to the bot that we detected them, don't POST).
+    if (honeypot.trim() !== "") {
+      e.preventDefault();
+      setStatus("success");
+      return;
+    }
+
+    // Bot check 2 — the submission happened too fast to be human.
+    const elapsed = Date.now() - mountedAtRef.current;
+    if (elapsed < MIN_FILL_MS) {
+      e.preventDefault();
+      setStatus("success"); // silent success — bots don't learn
+      return;
+    }
+
+    // Human validation — required fields.
     if (!firstName || !lastName || !email || !message) {
       e.preventDefault();
       setStatus("error");
@@ -211,6 +249,46 @@ export default function ContactSection({ data, site }: Props) {
               target="hidden_iframe"
               onSubmit={handleSubmit}
             >
+              {/*
+               * HONEYPOT — invisible to humans, catnip for bots.
+               * ----------------------------------------------
+               * - Positioned off-screen with `-9999px` (works even
+               *   with CSS disabled, unlike `display: none` which
+               *   some bots skip).
+               * - `tabIndex={-1}` + `autoComplete="off"` so keyboard
+               *   users never focus it.
+               * - `aria-hidden` so screen readers ignore it.
+               * - `name` deliberately looks like a normal field
+               *   ("website") — bots love form fields called this.
+               * - We do NOT give it a Google Form entry ID, so
+               *   even if a submission slips through, Google Sheets
+               *   never records this field.
+               */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: "-9999px",
+                  top: "auto",
+                  width: "1px",
+                  height: "1px",
+                  overflow: "hidden",
+                }}
+              >
+                <label htmlFor="website-url">
+                  Website (leave this empty)
+                </label>
+                <input
+                  id="website-url"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                />
+              </div>
+
               {/* First / last name row */}
               <div className="grid md:grid-cols-2 gap-5 sm:gap-6">
                 <div className="contact-field">
