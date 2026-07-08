@@ -3542,10 +3542,9 @@ body::after {
 .footer-india-badge {
   display: inline-flex;
   align-items: center;
+  gap: 12px;                     /* space between icon + text */
 
-  padding:
-    14px
-    20px;
+  padding: 10px 20px 10px 12px;  /* tighter left so icon breathes */
 
   border-radius: 9999px;
 
@@ -3563,6 +3562,19 @@ body::after {
   text-transform: uppercase;
 
   color: white;
+}
+
+/* The lion/flag icon sitting to the left of the badge text.
+   We give it a small white rounded background so a JPG logo
+   with its own background still sits neatly inside the pill
+   on the dark footer. */
+.footer-india-badge-icon {
+  height: 30px;
+  width: auto;
+  padding: 3px 5px;
+  border-radius: 6px;
+  background: #ffffff;
+  object-fit: contain;
 }
 
 /* =========================
