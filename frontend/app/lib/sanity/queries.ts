@@ -87,6 +87,7 @@ export const aboutQuery = groq`
     stats[]{label, value, width},
     "image1": image1${IMG},
     "image2": image2${IMG},
+    "image3": image3${IMG},
     sdgCardNumber,
     sdgCardLabel
   }
@@ -253,7 +254,8 @@ export const footerQuery = groq`
     copyright,
     columns[]{title, links[]{label, href}},
     bottomText,
-    bottomBadge
+    bottomBadge,
+    "bottomBadgeImage": bottomBadgeImage${IMG}
   }
 `;
 
