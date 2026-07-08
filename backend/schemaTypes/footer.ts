@@ -35,7 +35,19 @@ export default defineType({
     }),
 
     defineField({name: 'bottomText', title: 'Bottom bar text', type: 'string'}),
-    defineField({name: 'bottomBadge', title: 'Bottom bar badge', type: 'string'}),
+
+    // The pill on the right side of the bottom bar.
+    // - `bottomBadge` is the text (e.g. "Proudly Make in India")
+    // - `bottomBadgeImage` is the optional icon shown to its left
+    //   (e.g. the Make-in-India lion logo, or an Indian flag).
+    defineField({name: 'bottomBadge', title: 'Bottom bar badge text', type: 'string'}),
+    defineField({
+      name: 'bottomBadgeImage',
+      title: 'Bottom bar badge icon',
+      type: 'imageOrUrl',
+      description:
+        'Small icon shown before the badge text. Upload a transparent PNG (~48×48) or paste a URL.',
+    }),
   ],
   preview: {prepare: () => ({title: 'Footer'})},
 })
