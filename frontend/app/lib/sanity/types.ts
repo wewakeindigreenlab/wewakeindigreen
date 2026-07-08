@@ -76,6 +76,7 @@ export type AboutData = {
   stats?: { label?: string; value?: string; width?: string }[];
   image1?: ImageOrUrl;
   image2?: ImageOrUrl;
+  image3?: ImageOrUrl;
   sdgCardNumber?: string;
   sdgCardLabel?: string;
 };
