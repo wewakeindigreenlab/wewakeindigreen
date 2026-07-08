@@ -24,6 +24,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Script from "next/script";
 import { motion } from "framer-motion";
 
 import { ContactData, SiteSettings } from "@/app/lib/sanity/types";
@@ -34,6 +35,25 @@ import {
 } from "@/app/lib/sanity/fallbacks";
 import { resolveImage } from "@/app/lib/sanity/image";
 import { splitTitle } from "@/app/lib/util";
+
+/** reCAPTCHA v3 site key. Public on purpose — Google requires it
+ *  in the browser. Empty string = feature disabled, form still
+ *  works with honeypot + timing gates only. */
+const RECAPTCHA_SITE_KEY =
+  process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? "";
+
+/** Global typings for the `grecaptcha` object Google injects. */
+declare global {
+  interface Window {
+    grecaptcha?: {
+      ready: (cb: () => void) => void;
+      execute: (
+        siteKey: string,
+        options: { action: string }
+      ) => Promise<string>;
+    };
+  }
+}
 
 type Props = {
   data?: ContactData | null;
@@ -81,19 +101,65 @@ export default function ContactSection({ data, site }: Props) {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   /**
+   * Ask Google for a reCAPTCHA v3 token, then verify server-side.
+   * Returns `true` if verification passed (score ≥ threshold) OR if
+   * reCAPTCHA is not configured (graceful degrade). Returns `false`
+   * only when Google says the request looks like a bot.
+   */
+  const passesRecaptcha = async (): Promise<boolean> => {
+    // Feature disabled — just let the request through (honeypot +
+    // timing gates already provide baseline defence).
+    if (!RECAPTCHA_SITE_KEY) return true;
+
+    // Script hasn't loaded yet, or offline — fail closed. Bots
+    // often submit before the script loads, so this is a bonus gate.
+    if (typeof window === "undefined" || !window.grecaptcha) {
+      return false;
+    }
+
+    try {
+      // Generate an invisible token tied to this action.
+      const token: string = await new Promise((resolve, reject) => {
+        window.grecaptcha!.ready(() => {
+          window
+            .grecaptcha!.execute(RECAPTCHA_SITE_KEY, { action: "contact" })
+            .then(resolve)
+            .catch(reject);
+        });
+      });
+
+      // Verify server-side (secret key stays on the server).
+      const resp = await fetch("/api/verify-captcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = (await resp.json()) as { ok?: boolean };
+      return !!data?.ok;
+    } catch {
+      // Any error → treat as bot. Real users on a working browser
+      // essentially never hit this path.
+      return false;
+    }
+  };
+
+  /**
    * Submit handler:
-   *  - required-field check
    *  - honeypot check (bot filled the invisible field)
    *  - minimum time-on-page check (bot submitted too fast)
-   *  - submit using the hidden iframe trick so Google's lack of
-   *    CORS headers doesn't break the request
+   *  - reCAPTCHA v3 verification (async, server-side scored)
+   *  - required-field check
+   *  - submit using the hidden iframe trick so Google Form's lack
+   *    of CORS headers doesn't break the request
    *  - reset the form on success
    */
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // Bot check 1 — honeypot. If filled, silently pretend success
-    // (don't hint to the bot that we detected them, don't POST).
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // Prevent the native form-post — we now do async work first and
+    // will trigger the actual submit programmatically if we pass.
+    e.preventDefault();
+
+    // Bot check 1 — honeypot. If filled, silently pretend success.
     if (honeypot.trim() !== "") {
-      e.preventDefault();
       setStatus("success");
       return;
     }
@@ -101,24 +167,30 @@ export default function ContactSection({ data, site }: Props) {
     // Bot check 2 — the submission happened too fast to be human.
     const elapsed = Date.now() - mountedAtRef.current;
     if (elapsed < MIN_FILL_MS) {
-      e.preventDefault();
       setStatus("success"); // silent success — bots don't learn
       return;
     }
 
     // Human validation — required fields.
     if (!firstName || !lastName || !email || !message) {
-      e.preventDefault();
       setStatus("error");
       return;
     }
 
-    // Let the native form post to the hidden iframe.
     setStatus("sending");
 
-    // After the iframe loads we count it as success.
-    // Use setTimeout because Google returns an opaque response we
-    // can't actually read.
+    // Bot check 3 — reCAPTCHA v3 score check.
+    const ok = await passesRecaptcha();
+    if (!ok) {
+      // Silent success for bots. They shouldn't learn they were caught.
+      setStatus("success");
+      return;
+    }
+
+    // Passed all gates — fire the native form submit (Google Form
+    // via the hidden iframe). Then reset UI state.
+    formRef.current?.submit();
+
     window.setTimeout(() => {
       setStatus("success");
       setFirstName("");
@@ -134,6 +206,19 @@ export default function ContactSection({ data, site }: Props) {
       id="contact"
       className="relative overflow-hidden py-20 lg:py-28 bg-[#faf8fd]"
     >
+      {/*
+       * Load reCAPTCHA v3 script only when a site key exists.
+       * `next/script` handles injection + Next.js hydration cleanly.
+       * `strategy="afterInteractive"` waits until the page is usable
+       * so it never blocks first paint.
+       */}
+      {RECAPTCHA_SITE_KEY && (
+        <Script
+          src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`}
+          strategy="afterInteractive"
+        />
+      )}
+
       {/* GRID + decoration */}
       <div className="contact-grid-lines" />
       <div className="contact-glow" />
@@ -391,6 +476,35 @@ export default function ContactSection({ data, site }: Props) {
                   className="text-sm text-red-600 mt-2 font-semibold"
                 >
                   Please fill in all required fields and try again.
+                </p>
+              )}
+
+              {/*
+               * reCAPTCHA v3 legal notice — required by Google's
+               * Terms of Service when using the invisible version.
+               * Only shown when the feature is actually active.
+               */}
+              {RECAPTCHA_SITE_KEY && (
+                <p className="text-[11px] leading-[1.6] text-[#1a0f30]/50 mt-3">
+                  This site is protected by reCAPTCHA and the Google{" "}
+                  <a
+                    href="https://policies.google.com/privacy"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="underline hover:text-[#4E2F8E]"
+                  >
+                    Privacy Policy
+                  </a>{" "}
+                  and{" "}
+                  <a
+                    href="https://policies.google.com/terms"
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="underline hover:text-[#4E2F8E]"
+                  >
+                    Terms of Service
+                  </a>{" "}
+                  apply.
                 </p>
               )}
             </form>
