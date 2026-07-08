@@ -15,6 +15,7 @@ import { motion } from "framer-motion";
 
 import { FooterData } from "@/app/lib/sanity/types";
 import { footerFallback, withFallback } from "@/app/lib/sanity/fallbacks";
+import { resolveImage } from "@/app/lib/sanity/image";
 import { scrollToHash } from "@/app/lib/util";
 
 type Props = { data?: FooterData | null };
@@ -114,7 +115,23 @@ export default function Footer({ data }: Props) {
       <div className="footer-bottom-bar">
         <div className="max-w-[1320px] mx-auto px-6 lg:px-20 flex flex-col lg:flex-row items-center justify-between gap-6">
           <div className="footer-bottom-text">{footer.bottomText}</div>
-          <div className="footer-india-badge">{footer.bottomBadge}</div>
+
+          {/* "Proudly Make in India" badge — icon (CMS) + text. */}
+          <div className="footer-india-badge">
+            {(() => {
+              const iconSrc = resolveImage(footer.bottomBadgeImage, "");
+              return iconSrc ? (
+                <Image
+                  src={iconSrc}
+                  alt={footer.bottomBadgeImage?.alt ?? "Make in India"}
+                  width={44}
+                  height={30}
+                  className="footer-india-badge-icon"
+                />
+              ) : null;
+            })()}
+            <span>{footer.bottomBadge}</span>
+          </div>
         </div>
       </div>
     </>
