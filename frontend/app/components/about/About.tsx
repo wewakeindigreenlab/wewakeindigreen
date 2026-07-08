@@ -2,7 +2,7 @@
 
 /**
  * ABOUT SECTION
- * --------------------------------------------------------------
+ * -------------------------------------------------------------
  * "Who We Are" panel. Everything visible — title, chips, stat
  * bars, both images, the floating SDG card — is CMS-driven via
  * the Sanity `about` document. Falls back to sensible defaults.
