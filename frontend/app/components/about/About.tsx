@@ -2,7 +2,7 @@
 
 /**
  * ABOUT SECTION
- * ------------------------------------------------------------
+ * --------------------------------------------------------------
  * "Who We Are" panel. Everything visible — title, chips, stat
  * bars, both images, the floating SDG card — is CMS-driven via
  * the Sanity `about` document. Falls back to sensible defaults.
@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import { AboutData } from "@/app/lib/sanity/types";
 import { aboutFallback, withFallback } from "@/app/lib/sanity/fallbacks";
 import { resolveImage } from "@/app/lib/sanity/image";
-import { splitTitle } from "@/app/lib/util";
+import { splitTitle, scrollToHash } from "@/app/lib/util";
 
 type Props = { data?: AboutData | null };
 
@@ -99,50 +99,120 @@ export default function AboutSection({ data }: Props) {
                 </motion.div>
               ))}
             </div>
+
+            {/* STAT BARS (CMS array) */}
+            {/* <div className="mt-12 lg:mt-14 space-y-8">
+              {(about.stats ?? []).map((item, index) => (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                  viewport={{ once: false, amount: 0.05 }}
+                > */}
+                  {/* Bar label + value */}
+                  {/* <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-[#1a0f30]/70">
+                      {item.label}
+                    </span>
+                    <span className="text-sm font-black text-[#6040a8]">
+                      {item.value}
+                    </span>
+                  </div> */}
+
+                  {/* Bar track */}
+                  {/* <div className="h-[12px] rounded-full bg-[#ede7fb] overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[#6040a8] to-[#40916c]"
+                      style={{ width: item.width ?? "0%" }}
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div> */}
           </div>
 
-          {/* RIGHT — image collage */}
+          {/*
+           * RIGHT — 2×2 tile grid.
+           * The three SDG badge PNGs take up three of the four tiles;
+           * the "3 UN SDGs Addressed" counter fills the fourth. Every
+           * square is used, no huge empty purple backgrounds, and the
+           * decorative floating boxes are gone so nothing can overlap
+           * the SDG 9 icon.
+           */}
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7 }}
             viewport={{ once: false, amount: 0.05 }}
-            className="relative h-[480px] sm:h-[600px] lg:h-[760px]"
+            className="grid grid-cols-2 gap-4 sm:gap-5"
           >
-            {/* IMAGE 1 — main large picture (CMS) */}
-            <div className="absolute left-0 top-0 w-[68%] h-[60%] sm:h-[520px] rounded-[28px] sm:rounded-[36px] overflow-hidden shadow-[0_30px_80px_rgba(96,64,168,0.14)]">
+            {/* SDG 6 */}
+            <a
+              href="#sdg"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToHash("#sdg");
+              }}
+              aria-label="Jump to SDG section"
+              className="relative aspect-square rounded-[24px] sm:rounded-[28px] overflow-hidden bg-white border border-[#dfd4f5] shadow-[0_18px_50px_rgba(96,64,168,0.10)] transition-transform duration-500 hover:-translate-y-1"
+            >
               <Image
                 fill
-                src={resolveImage(about.image1, "/images/farmer.jpg")}
-                alt={about.image1?.alt ?? "About image 1"}
-                className="object-cover"
+                src={resolveImage(about.image1, "/images/sdg1.png")}
+                alt={about.image1?.alt ?? "SDG badge"}
+                className="object-contain p-3 sm:p-4"
+                sizes="(max-width: 1024px) 50vw, 220px"
               />
-            </div>
+            </a>
 
-            {/* IMAGE 2 — overlap card (CMS) */}
-            <div className="absolute right-0 bottom-0 w-[48%] h-[44%] sm:h-[360px] rounded-[24px] sm:rounded-[32px] overflow-hidden border-[10px] border-[#faf8fd] shadow-[0_20px_60px_rgba(96,64,168,0.12)]">
+            {/* SDG 9 */}
+            <a
+              href="#sdg"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToHash("#sdg");
+              }}
+              aria-label="Jump to SDG section"
+              className="relative aspect-square rounded-[24px] sm:rounded-[28px] overflow-hidden bg-white border border-[#dfd4f5] shadow-[0_18px_50px_rgba(96,64,168,0.10)] transition-transform duration-500 hover:-translate-y-1"
+            >
               <Image
                 fill
-                src={resolveImage(about.image2, "/images/farmer.jpg")}
-                alt={about.image2?.alt ?? "About image 2"}
-                className="object-cover"
+                src={resolveImage(about.image2, "/images/sdg9.png")}
+                alt={about.image2?.alt ?? "SDG badge"}
+                className="object-contain p-3 sm:p-4"
+                sizes="(max-width: 1024px) 50vw, 220px"
               />
-            </div>
+            </a>
 
-            {/* SDG floating card (CMS number + label) */}
-            <div className="absolute left-[8%] bottom-[10%] w-[180px] sm:w-[220px] rounded-[28px] bg-white/85 backdrop-blur-xl border border-[#dfd4f5] p-6 sm:p-8 shadow-[0_20px_60px_rgba(96,64,168,0.10)]">
-              <div className="text-[56px] sm:text-[72px] leading-none font-black tracking-[-0.06em] text-[#6040a8]">
+            {/* SDG 12 */}
+            <a
+              href="#sdg"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToHash("#sdg");
+              }}
+              aria-label="Jump to SDG section"
+              className="relative aspect-square rounded-[24px] sm:rounded-[28px] overflow-hidden bg-white border border-[#dfd4f5] shadow-[0_18px_50px_rgba(96,64,168,0.10)] transition-transform duration-500 hover:-translate-y-1"
+            >
+              <Image
+                fill
+                src={resolveImage(about.image3, "/images/sdg12.png")}
+                alt={about.image3?.alt ?? "SDG badge"}
+                className="object-contain p-3 sm:p-4"
+                sizes="(max-width: 1024px) 50vw, 220px"
+              />
+            </a>
+
+            {/* "3 UN SDGs Addressed" count tile — fills the fourth slot */}
+            <div className="relative aspect-square rounded-[24px] sm:rounded-[28px] overflow-hidden bg-gradient-to-br from-[#f3effe] to-[#dfd4f5] border border-[#dfd4f5] shadow-[0_18px_50px_rgba(96,64,168,0.10)] flex flex-col items-center justify-center text-center px-4">
+              <div className="text-[68px] sm:text-[92px] leading-none font-black tracking-[-0.06em] text-[#6040a8]">
                 {about.sdgCardNumber}
               </div>
-              <div className="mt-3 text-xs sm:text-sm uppercase tracking-[0.22em] text-[#1a0f30]/55 leading-[1.8]">
+              <div className="mt-3 text-[10px] sm:text-xs uppercase tracking-[0.22em] text-[#1a0f30]/60 leading-[1.7] font-bold">
                 {about.sdgCardLabel}
               </div>
             </div>
-
-            {/* Floating decorative boxes (CSS) */}
-            <div className="about-mini-box mini-1" />
-            <div className="about-mini-box mini-2" />
-            <div className="about-mini-box mini-3" />
           </motion.div>
         </div>
       </div>
