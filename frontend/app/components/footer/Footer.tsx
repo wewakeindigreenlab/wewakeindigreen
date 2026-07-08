@@ -2,7 +2,7 @@
 
 /**
  * FOOTER
- * --------------------------------------------------------------
+ * -------------------------------------------------------------
  * Brand block + link columns + bottom bar. Every column, link,
  * line of copy comes from Sanity (`footer` doc).
  *
