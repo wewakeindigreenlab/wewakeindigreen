@@ -213,4 +213,5 @@ export type FooterData = {
   columns?: { title?: string; links?: NavLink[] }[];
   bottomText?: string;
   bottomBadge?: string;
+  bottomBadgeImage?: ImageOrUrl;
 };
