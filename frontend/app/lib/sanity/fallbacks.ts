@@ -1,6 +1,6 @@
 /**
  * STATIC FALLBACK CONTENT
- * --------------------------------------------------------------
+ * -------------------------------------------------------------
  * These mirror the original hard-coded copy/data that lived inside
  * the components. They are only used when Sanity returns nothing —
  * for example, on a fresh project before the editor has filled in
