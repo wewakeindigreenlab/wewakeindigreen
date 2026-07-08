@@ -168,15 +168,6 @@ export const biomFallback: BiomData = {
   rawMaterialsTitle: "Raw Material Forms",
   rawMaterials: [
     {
-      title: "BioMANS Beads",
-      desc: "Pellet-form biobased material ready for injection moulding and extrusion.",
-      image: {
-        // Grain / pellet close-up — visually maps to biopolymer beads.
-        url: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=1600&q=80",
-        alt: "BioMANS beads — biopolymer pellets",
-      },
-    },
-    {
       title: "BioMANS Sheets",
       desc: "Flexible compostable sheets suitable for packaging and flat-form products.",
       image: {
@@ -609,7 +600,14 @@ export const footerFallback: FooterData = {
   ],
   bottomText:
     "WIGPL · Pune, Maharashtra, India · Clean Tech & Deep Tech · Brand colour #4E2F8E",
-  bottomBadge: "🇮🇳 Proudly Make in India",
+  bottomBadge: "Proudly Make in India",
+  // Default badge icon — the "Make in India" lion mark stored at
+  // /public/images/makeinindialogo.jpg. Editors can replace this via
+  // Sanity Studio (Footer → Bottom bar badge icon).
+  bottomBadgeImage: {
+    url: "/images/makeinindialogo.png",
+    alt: "Make in India",
+  },
 };
 
 /* ---------- SITE SETTINGS ---------- */
