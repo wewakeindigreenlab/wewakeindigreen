@@ -99,13 +99,19 @@ export const aboutFallback: AboutData = {
     { label: "Bio-based material content", value: "100%", width: "100%" },
     { label: "Soil nitrogen improvement", value: "+45%", width: "45%" },
   ],
+  // Three-image collage — one per UN SDG the company advances.
+  // Each image also acts as a link to the #sdg section below.
   image1: {
-    url: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=900&q=80",
-    alt: "Indian farmer",
+    url: "/images/sdg1.png",
+    alt: "SDG 6 — Clean Water & Sanitation",
   },
   image2: {
-    url: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&q=80",
-    alt: "Green plant",
+    url: "/images/sdg9.png",
+    alt: "SDG 9 — Industry, Innovation & Infrastructure",
+  },
+  image3: {
+    url: "/images/sdg12.png",
+    alt: "SDG 12 — Responsible Consumption & Production",
   },
   sdgCardNumber: "3",
   sdgCardLabel: "UN SDGs Addressed",
@@ -602,7 +608,7 @@ export const footerFallback: FooterData = {
     "WIGPL · Pune, Maharashtra, India · Clean Tech & Deep Tech · Brand colour #4E2F8E",
   bottomBadge: "Proudly Make in India",
   // Default badge icon — the "Make in India" lion mark stored at
-  // /public/images/makeinindialogo.jpg. Editors can replace this via
+  // /public/images/makeinindialogo.png. Editors can replace this via
   // Sanity Studio (Footer → Bottom bar badge icon).
   bottomBadgeImage: {
     url: "/images/makeinindialogo.png",
@@ -667,7 +673,7 @@ export const siteSettingsFallback: SiteSettings = {
 };
 
 /**
- * Helper tthat merges fetched data with a fallback object, field
+ * Helper that merges fetched data with a fallback object, field
  * by field. Empty/undefined fetched values fall back. This lets
  * editors fill the CMS gradually without breaking the site.
  */
