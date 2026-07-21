@@ -15,7 +15,14 @@ export default defineType({
     defineField({name: 'title', title: 'Title', type: 'string'}),
     defineField({name: 'subtitle', title: 'Subtitle', type: 'string'}),
     defineField({name: 'impact', title: 'Card impact line', type: 'string'}),
-    defineField({name: 'image', title: 'Card image', type: 'imageOrUrl'}),
+    defineField({
+      name: 'images',
+      title: 'Card images (carousel)',
+      description: 'Add two or more to show a rotating carousel on the card. One image works too — the carousel just won\'t show arrows/dots.',
+      type: 'array',
+      of: [{type: 'imageOrUrl'}],
+      validation: (Rule) => Rule.min(1),
+    }),
 
     // Custom card slug — used as a stable key (legacy `id` value).
     defineField({
@@ -66,6 +73,6 @@ export default defineType({
     }),
   ],
   preview: {
-    select: {title: 'title', media: 'image.image'},
+    select: {title: 'title', media: 'images.0.image'},
   },
 })
