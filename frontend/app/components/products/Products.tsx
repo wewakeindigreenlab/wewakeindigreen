@@ -10,7 +10,7 @@
  *   2. `product` documents (one per card; each carries its own
  *      modal-detail data: impact stats + manufacturing steps)
  *
- * Falls back to the original hard-coded data when Sanity is empty.
+ * Falls back to the original hard-coded data when Sanity is empty. e
  */
 
 import { useState } from "react";
