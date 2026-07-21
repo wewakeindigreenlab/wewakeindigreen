@@ -117,7 +117,7 @@ export type Product = {
   subtitle?: string;
   impact?: string;
   cardKey?: string;
-  image?: ImageOrUrl;
+  image?: ImageOrUrl[];
   modalImage?: ImageOrUrl;
   modalTitle?: string;
   modalSubtitle?: string;
