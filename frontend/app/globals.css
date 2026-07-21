@@ -1669,6 +1669,82 @@ body::after {
   opacity: 1;
 }
 
+/* CAROUSEL ARROWS */
+
+.product-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  border-radius: 9999px;
+
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+
+  color: #4e2f8e;
+
+  opacity: 0;
+  transform: translateY(-50%);
+
+  transition: opacity 0.3s ease, background 0.3s ease;
+}
+
+.product-card:hover .product-carousel-arrow {
+  opacity: 1;
+}
+
+.product-carousel-arrow:hover {
+  background: #fff;
+}
+
+.product-carousel-arrow-left {
+  left: 16px;
+}
+
+.product-carousel-arrow-right {
+  right: 16px;
+}
+
+/* CAROUSEL DOTS */
+
+.product-carousel-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18px;
+  z-index: 2;
+
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.product-carousel-dot {
+  width: 6px;
+  height: 6px;
+
+  border: none;
+  border-radius: 9999px;
+
+  background: rgba(255,255,255,0.5);
+
+  transition: background 0.3s ease, width 0.3s ease;
+}
+
+.product-carousel-dot.active {
+  width: 18px;
+
+  background: #fff;
+}
+
 /* =========================
    PRODUCTS SECTION END
 ========================= */
