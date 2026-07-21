@@ -89,7 +89,8 @@ export const aboutQuery = groq`
     "image2": image2${IMG},
     "image3": image3${IMG},
     sdgCardNumber,
-    sdgCardLabel
+    sdgCardLabel,
+    "sdgIcons": sdgIcons[]${IMG}
   }
 `;
 
