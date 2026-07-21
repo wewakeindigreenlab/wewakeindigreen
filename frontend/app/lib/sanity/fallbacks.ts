@@ -1,6 +1,6 @@
 /**
  * STATIC FALLBACK CONTENT
- * -------------------------------------------------------------
+ * --------------------------------------------------------------
  * These mirror the original hard-coded copy/data that lived inside
  * the components. They are only used when Sanity returns nothing —
  * for example, on a fresh project before the editor has filled in
@@ -102,19 +102,21 @@ export const aboutFallback: AboutData = {
   // Three-image collage — one per UN SDG the company advances.
   // Each image also acts as a link to the #sdg section below.
   image1: {
-    url: "/images/sdg1.png",
-    alt: "SDG 6 — Clean Water & Sanitation",
+    url: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=900&q=80",
+    alt: "Indian farmer",
   },
   image2: {
-    url: "/images/sdg9.png",
-    alt: "SDG 9 — Industry, Innovation & Infrastructure",
-  },
-  image3: {
-    url: "/images/sdg12.png",
-    alt: "SDG 12 — Responsible Consumption & Production",
+    url: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&q=80",
+    alt: "Green plant",
   },
   sdgCardNumber: "3",
   sdgCardLabel: "UN SDGs Addressed",
+  // Floating SDG icon squares beside the collage — matches sdgCardLabel's "3".
+  sdgIcons: [
+    {url: "/images/sdg1.png", alt: "SDG 1 — No Poverty"},
+    {url: "/images/sdg9.png", alt: "SDG 9 — Industry, Innovation & Infrastructure"},
+    {url: "/images/sdg12.png", alt: "SDG 12 — Responsible Consumption & Production"},
+  ],
 };
 
 /* ---------- STORY ---------- */
