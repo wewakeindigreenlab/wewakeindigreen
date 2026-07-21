@@ -140,7 +140,7 @@ export const productsQuery = groq`
     subtitle,
     impact,
     "cardKey": cardKey.current,
-    "image": image${IMG},
+    "images": images[]${IMG},
     "modalImage": modalImage${IMG},
     modalTitle,
     modalSubtitle,
