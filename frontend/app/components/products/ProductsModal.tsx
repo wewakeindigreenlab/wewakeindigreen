@@ -67,7 +67,7 @@ export default function ProductModal({
           <Image
             fill
             src={resolveImage(
-              product.modalImage ?? product.image,
+              product.modalImage ?? product.images?.[0] ?? product.legacyImage,
               "/images/farmer.jpg"
             )}
             alt={product.modalTitle ?? product.title ?? "Product"}
