@@ -37,8 +37,7 @@ export const navbarFallback: NavbarData = {
   links: [
     { label: "About", href: "#about" },
     { label: "Plastic Crisis", href: "#story" },
-    { label: "BioMANS", href: "#products" },
-    { label: "SDG Goals", href: "#sdg" },
+    { label: "Products", href: "#products" },
     { label: "Blog", href: "#blog" },
     { label: "Team", href: "#team" },
     { label: "Vision", href: "#vision" },
