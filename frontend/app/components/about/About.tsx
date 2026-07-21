@@ -2,7 +2,7 @@
 
 /**
  * ABOUT SECTION
- * -------------------------------------------------------------
+ * --------------------------------------------------------------
  * "Who We Are" panel. Everything visible — title, chips, stat
  * bars, both images, the floating SDG card — is CMS-driven via
  * the Sanity `about` document. Falls back to sensible defaults.
@@ -14,13 +14,33 @@ import { motion } from "framer-motion";
 import { AboutData } from "@/app/lib/sanity/types";
 import { aboutFallback, withFallback } from "@/app/lib/sanity/fallbacks";
 import { resolveImage } from "@/app/lib/sanity/image";
-import { splitTitle, scrollToHash } from "@/app/lib/util";
+import { splitTitle } from "@/app/lib/util";
 
 type Props = { data?: AboutData | null };
+
+/* Placement/rotation for the floating SDG icon boxes — a design concern,
+   kept in code. The image + alt for each slot comes from CMS (about.sdgIcons),
+   falling back to the local SDG PNGs when the CMS array is empty/shorter. */
+const SDG_BOX_LAYOUT = [
+  { position: "right-[18%] top-[2%]", rotate: -10 },
+  { position: "right-[1%] top-[15%]", rotate: 14 },
+  { position: "right-[15%] top-[30%]", rotate: -16 },
+] as const;
+
+const SDG_ICON_FALLBACKS = ["/images/sdg1.png", "/images/sdg9.png", "/images/sdg12.png"];
 
 export default function AboutSection({ data }: Props) {
   const about = withFallback(data, aboutFallback);
   const [t1, t2, t3] = splitTitle(about.title);
+
+  const sdgBoxes = SDG_BOX_LAYOUT.map((layout, index) => {
+    const icon = about.sdgIcons?.[index];
+    return {
+      ...layout,
+      src: resolveImage(icon, SDG_ICON_FALLBACKS[index]),
+      alt: icon?.alt ?? `SDG icon ${index + 1}`,
+    };
+  });
 
   return (
     <section
@@ -132,87 +152,78 @@ export default function AboutSection({ data }: Props) {
             </div> */}
           </div>
 
-          {/*
-           * RIGHT — 2×2 tile grid.
-           * The three SDG badge PNGs take up three of the four tiles;
-           * the "3 UN SDGs Addressed" counter fills the fourth. Every
-           * square is used, no huge empty purple backgrounds, and the
-           * decorative floating boxes are gone so nothing can overlap
-           * the SDG 9 icon.
-           */}
+          {/* RIGHT — image collage */}
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7 }}
             viewport={{ once: false, amount: 0.05 }}
-            className="grid grid-cols-2 gap-4 sm:gap-5"
+            className="relative h-[480px] sm:h-[600px] lg:h-[760px]"
           >
-            {/* SDG 6 */}
-            <a
-              href="#sdg"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToHash("#sdg");
-              }}
-              aria-label="Jump to SDG section"
-              className="relative aspect-square rounded-[24px] sm:rounded-[28px] overflow-hidden bg-white border border-[#dfd4f5] shadow-[0_18px_50px_rgba(96,64,168,0.10)] transition-transform duration-500 hover:-translate-y-1"
-            >
+            {/* IMAGE 1 — main large picture (CMS) */}
+            <div className="absolute left-0 top-0 w-[68%] h-[60%] sm:h-[520px] rounded-[28px] sm:rounded-[36px] overflow-hidden shadow-[0_30px_80px_rgba(96,64,168,0.14)]">
               <Image
                 fill
-                src={resolveImage(about.image1, "/images/sdg1.png")}
-                alt={about.image1?.alt ?? "SDG badge"}
-                className="object-contain p-3 sm:p-4"
-                sizes="(max-width: 1024px) 50vw, 220px"
+                src={resolveImage(about.image1, "/images/farmer.jpg")}
+                alt={about.image1?.alt ?? "About image 1"}
+                className="object-cover"
               />
-            </a>
+            </div>
 
-            {/* SDG 9 */}
-            <a
-              href="#sdg"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToHash("#sdg");
-              }}
-              aria-label="Jump to SDG section"
-              className="relative aspect-square rounded-[24px] sm:rounded-[28px] overflow-hidden bg-white border border-[#dfd4f5] shadow-[0_18px_50px_rgba(96,64,168,0.10)] transition-transform duration-500 hover:-translate-y-1"
-            >
+            {/* IMAGE 2 — overlap card (CMS) */}
+            <div className="absolute right-0 bottom-0 w-[48%] h-[44%] sm:h-[360px] rounded-[24px] sm:rounded-[32px] overflow-hidden border-[10px] border-[#faf8fd] shadow-[0_20px_60px_rgba(96,64,168,0.12)]">
               <Image
                 fill
-                src={resolveImage(about.image2, "/images/sdg9.png")}
-                alt={about.image2?.alt ?? "SDG badge"}
-                className="object-contain p-3 sm:p-4"
-                sizes="(max-width: 1024px) 50vw, 220px"
+                src={resolveImage(about.image2, "/images/about2.jpeg")}
+                alt={about.image2?.alt ?? "About image 2"}
+                className="object-cover"
               />
-            </a>
+            </div>
 
-            {/* SDG 12 */}
-            <a
-              href="#sdg"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToHash("#sdg");
-              }}
-              aria-label="Jump to SDG section"
-              className="relative aspect-square rounded-[24px] sm:rounded-[28px] overflow-hidden bg-white border border-[#dfd4f5] shadow-[0_18px_50px_rgba(96,64,168,0.10)] transition-transform duration-500 hover:-translate-y-1"
-            >
-              <Image
-                fill
-                src={resolveImage(about.image3, "/images/sdg12.png")}
-                alt={about.image3?.alt ?? "SDG badge"}
-                className="object-contain p-3 sm:p-4"
-                sizes="(max-width: 1024px) 50vw, 220px"
-              />
-            </a>
-
-            {/* "3 UN SDGs Addressed" count tile — fills the fourth slot */}
-            <div className="relative aspect-square rounded-[24px] sm:rounded-[28px] overflow-hidden bg-gradient-to-br from-[#f3effe] to-[#dfd4f5] border border-[#dfd4f5] shadow-[0_18px_50px_rgba(96,64,168,0.10)] flex flex-col items-center justify-center text-center px-4">
-              <div className="text-[68px] sm:text-[92px] leading-none font-black tracking-[-0.06em] text-[#6040a8]">
+            {/* SDG floating card (CMS number + label) */}
+            <div className="absolute left-[8%] bottom-[10%] w-[180px] sm:w-[220px] rounded-[28px] bg-white/85 backdrop-blur-xl border border-[#dfd4f5] p-6 sm:p-8 shadow-[0_20px_60px_rgba(96,64,168,0.10)]">
+              <div className="text-[56px] sm:text-[72px] leading-none font-black tracking-[-0.06em] text-[#6040a8]">
                 {about.sdgCardNumber}
               </div>
-              <div className="mt-3 text-[10px] sm:text-xs uppercase tracking-[0.22em] text-[#1a0f30]/60 leading-[1.7] font-bold">
+              <div className="mt-3 text-xs sm:text-sm uppercase tracking-[0.22em] text-[#1a0f30]/55 leading-[1.8]">
                 {about.sdgCardLabel}
               </div>
             </div>
+
+            {/* Floating decorative boxes (CSS) */}
+            <div className="about-mini-box mini-1" />
+            <div className="about-mini-box mini-2" />
+            <div className="about-mini-box mini-3" />
+
+            {/* SDG floating square boxes */}
+            {sdgBoxes.map((sdg, index) => (
+              <div key={`${sdg.src}-${index}`} className={`absolute z-20 ${sdg.position}`}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, rotate: sdg.rotate }}
+                  whileInView={{ opacity: 1, scale: 1, rotate: sdg.rotate }}
+                  transition={{ duration: 0.5, delay: 0.2 + index * 0.12 }}
+                  viewport={{ once: false, amount: 0.05 }}
+                >
+                  <motion.div
+                    animate={{ y: [0, -12, 0] }}
+                    transition={{
+                      duration: 4 + index,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                      delay: index * 0.4,
+                    }}
+                    className="relative h-14 w-14 sm:h-16 sm:w-16 lg:h-20 lg:w-20"
+                  >
+                    <Image
+                      fill
+                      src={sdg.src}
+                      alt={sdg.alt}
+                      className="object-contain drop-shadow-[0_14px_28px_rgba(96,64,168,0.25)]"
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
+            ))}
           </motion.div>
         </div>
       </div>
