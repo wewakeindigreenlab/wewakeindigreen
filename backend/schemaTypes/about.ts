@@ -56,11 +56,21 @@ export default defineType({
     //  - image3: third card (bottom-left, added for the SDG trio)
     defineField({name: 'image1', title: 'Image 1 (large)', type: 'imageOrUrl'}),
     defineField({name: 'image2', title: 'Image 2 (small)', type: 'imageOrUrl'}),
-    defineField({name: 'image3', title: 'Image 3 (small)', type: 'imageOrUrl'}),
 
     // Floating "3 UN SDGs Addressed" card.
     defineField({name: 'sdgCardNumber', title: 'SDG card big number', type: 'string'}),
     defineField({name: 'sdgCardLabel', title: 'SDG card label', type: 'string'}),
+
+    // Small floating SDG icon squares scattered beside the image collage.
+    // Position/rotation for each are handled in the frontend design, not here.
+    defineField({
+      name: 'sdgIcons',
+      title: 'SDG icon boxes (floating)',
+      description: 'Small SDG icon squares that float beside the image collage. Add up to 3.',
+      type: 'array',
+      of: [{type: 'imageOrUrl'}],
+      validation: (Rule) => Rule.max(3),
+    }),
   ],
   preview: {prepare: () => ({title: 'About Section'})},
 })
