@@ -14,11 +14,11 @@
  */
 
 import { useState } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 
 import ProductModal from "./ProductsModal";
+import ProductImageCarousel from "./ProductImageCarousel";
 
 import { Product, ProductsSection } from "@/app/lib/sanity/types";
 import {
@@ -108,13 +108,22 @@ export default function ProductsSectionCmp({
                 className="product-card group cursor-pointer"
                 onClick={() => setSelectedProduct(product)}
               >
-                {/* IMAGE */}
+                {/* IMAGE CAROUSEL */}
                 <div className="product-image-wrap">
-                  <Image
-                    fill
-                    src={resolveImage(product.image, "/images/farmer.jpg")}
-                    alt={product.title ?? "Product"}
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  <ProductImageCarousel
+                    images={(() => {
+                      const slides = product.images && product.images.length > 0
+                        ? product.images
+                        : product.legacyImage
+                        ? [product.legacyImage]
+                        : [];
+                      return slides.length > 0
+                        ? slides.map((img, i) => ({
+                            src: resolveImage(img, "/images/farmer.jpg"),
+                            alt: img?.alt ?? product.title ?? `Product image ${i + 1}`,
+                          }))
+                        : [{ src: "/images/farmer.jpg", alt: product.title ?? "Product" }];
+                    })()}
                   />
                   <div className="product-image-overlay" />
                   <div className="product-tag">BioMANS</div>
