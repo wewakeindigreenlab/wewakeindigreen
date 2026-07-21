@@ -79,6 +79,7 @@ export type AboutData = {
   image3?: ImageOrUrl;
   sdgCardNumber?: string;
   sdgCardLabel?: string;
+  sdgIcons?: ImageOrUrl[];
 };
 
 export type StoryData = {
