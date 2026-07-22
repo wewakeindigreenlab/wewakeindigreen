@@ -8,7 +8,6 @@
  * `biom` document, with sensible fallbacks.
  */
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import CheckIcon from "@mui/icons-material/Check";
 
@@ -16,6 +15,7 @@ import { BiomData } from "@/app/lib/sanity/types";
 import { biomFallback, withFallback } from "@/app/lib/sanity/fallbacks";
 import { resolveImage } from "@/app/lib/sanity/image";
 import { splitTitle } from "@/app/lib/util";
+import ProductImageCarousel from "@/app/components/products/ProductImageCarousel";
 
 type Props = { data?: BiomData | null };
 
@@ -109,11 +109,27 @@ export default function Biom({ data }: Props) {
            */}
           <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mt-8 lg:mt-10">
             {(biom.rawMaterials ?? []).map((item, index) => {
-              // Resolve a usable image URL with a brand placeholder fallback.
-              const imgSrc = resolveImage(
-                item.image,
-                "/images/blog-fallback.jpg"
-              );
+              // Build the carousel slides: prefer the new `images` array,
+              // fall back to the pre-migration single `image` as a
+              // 1-slide carousel, then to a brand placeholder.
+              const slides =
+                item.images && item.images.length > 0
+                  ? item.images
+                  : item.legacyImage
+                  ? [item.legacyImage]
+                  : [];
+              const carouselImages =
+                slides.length > 0
+                  ? slides.map((img, i) => ({
+                      src: resolveImage(img, "/images/blog-fallback.jpg"),
+                      alt: img?.alt ?? item.title ?? `Raw material image ${i + 1}`,
+                    }))
+                  : [
+                      {
+                        src: "/images/blog-fallback.jpg",
+                        alt: item.title ?? "Raw material",
+                      },
+                    ];
 
               return (
                 <motion.div
@@ -126,15 +142,9 @@ export default function Biom({ data }: Props) {
                   // is pixel-identical to the Products section.
                   className="product-card group"
                 >
-                  {/* IMAGE HERO */}
+                  {/* IMAGE CAROUSEL */}
                   <div className="product-image-wrap">
-                    <Image
-                      fill
-                      src={imgSrc}
-                      alt={item.image?.alt ?? item.title ?? "Raw material"}
-                      sizes="(max-width: 768px) 100vw, 600px"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                    <ProductImageCarousel images={carouselImages} />
                     <div className="product-image-overlay" />
                     <div className="product-tag">BioMANS</div>
                   </div>
