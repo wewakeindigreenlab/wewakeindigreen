@@ -177,11 +177,13 @@ export const biomFallback: BiomData = {
     {
       title: "BioMANS Sheets",
       desc: "Flexible compostable sheets suitable for packaging and flat-form products.",
-      image: {
-        // Natural fibre / sheet texture — visually maps to bio-sheets.
-        url: "https://images.unsplash.com/photo-1574283005048-b3a3a93b3a44?w=1600&q=80",
-        alt: "BioMANS sheets — compostable bioplastic",
-      },
+      images: [
+        {
+          // Natural fibre / sheet texture — visually maps to bio-sheets.
+          url: "https://images.unsplash.com/photo-1574283005048-b3a3a93b3a44?w=1600&q=80",
+          alt: "BioMANS sheets — compostable bioplastic",
+        },
+      ],
     },
   ],
 };
