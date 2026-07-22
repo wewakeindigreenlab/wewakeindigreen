@@ -59,7 +59,7 @@ body::after {
   inset: 0;
 
   background-image:
-    url("/images/farmer.jpg");
+    var(--hero-bg-image, url("/images/farmer.jpg"));
 
   background-size: cover;
   background-position: center;
@@ -4011,6 +4011,7 @@ body::after {
   position: absolute;
   inset: 0;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.35s ease;
   background:
     radial-gradient(
