@@ -107,7 +107,9 @@ export type BiomData = {
     icon?: string;
     title?: string;
     desc?: string;
-    image?: ImageOrUrl;
+    images?: ImageOrUrl[];
+    /** Legacy single-image value from before the `images` carousel field existed. */
+    legacyImage?: ImageOrUrl;
   }[];
 };
 
