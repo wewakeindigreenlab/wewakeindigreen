@@ -99,7 +99,7 @@ body::after {
   inset: 0;
 
   background-image:
-    url("/images/farmer.jpg");
+    var(--hero-bg-image, url("/images/farmer.jpg"));
 
   background-size: cover;
   background-position: center;
