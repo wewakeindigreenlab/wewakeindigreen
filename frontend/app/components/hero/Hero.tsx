@@ -13,6 +13,7 @@
 import { motion } from "framer-motion";
 import { HeroData } from "@/app/lib/sanity/types";
 import { heroFallback, withFallback } from "@/app/lib/sanity/fallbacks";
+import { resolveImage } from "@/app/lib/sanity/image";
 import { splitTitle, scrollToHash } from "@/app/lib/util";
 
 type HeroProps = { data?: HeroData | null };
@@ -21,6 +22,10 @@ export default function Hero({ data }: HeroProps) {
   // Merge CMS data with fallback so the section always renders
   // something polished, even with no Sanity content yet.
   const hero = withFallback(data, heroFallback);
+
+  // CMS background image (uploaded asset or pasted URL), falling
+  // back to the original static image when Sanity has nothing set.
+  const bgImageUrl = resolveImage(hero.backgroundImage, "/images/farmer.jpg");
 
   // Three-part title: [intro, italic accent, outro]
   const [p1, p2, p3] = splitTitle(hero.title);
@@ -41,8 +46,11 @@ export default function Hero({ data }: HeroProps) {
       id="home"
       className="hero-section relative min-h-screen overflow-hidden bg-white flex items-center"
     >
-      {/* BACKGROUND IMAGE */}
-      <div className="hero-bg-image" />
+      {/* BACKGROUND IMAGE (CMS, falls back to static asset) */}
+      <div
+        className="hero-bg-image"
+        style={{ "--hero-bg-image": `url(${bgImageUrl})` } as React.CSSProperties}
+      />
 
       {/* IMAGE OVERLAY */}
       <div className="hero-bg-overlay" />
