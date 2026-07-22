@@ -117,7 +117,11 @@ export const biomQuery = groq`
       icon,
       title,
       desc,
-      "image": image${IMG}
+      "images": images[]${IMG},
+      // Pre-migration docs still store their old single image under
+      // the legacy "image" key — surfaced separately so the frontend
+      // can fall back to it as a 1-slide carousel until re-edited.
+      "legacyImage": image${IMG}
     }
   }
 `;
