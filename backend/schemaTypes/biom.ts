@@ -38,10 +38,17 @@ export default defineType({
         {
           type: 'object',
           fields: [
-            // Main photo of the raw material. Editors can upload an image
-            // OR paste a URL — both are handled by the shared `imageOrUrl`
-            // shape and the `resolveImage` helper on the frontend.
-            defineField({name: 'image', title: 'Image', type: 'imageOrUrl'}),
+            // Photos of the raw material. Add two or more to show a
+            // rotating carousel on the card, same as the Products grid.
+            defineField({
+              name: 'images',
+              title: 'Images (carousel)',
+              description:
+                'Add two or more to show a rotating carousel on the card. One image works too — the carousel just won\'t show arrows/dots.',
+              type: 'array',
+              of: [{type: 'imageOrUrl'}],
+              validation: (Rule) => Rule.min(1),
+            }),
             defineField({name: 'title', title: 'Title', type: 'string'}),
             defineField({name: 'desc', title: 'Description', type: 'text'}),
             // Legacy emoji icon — kept hidden in studio so old documents
