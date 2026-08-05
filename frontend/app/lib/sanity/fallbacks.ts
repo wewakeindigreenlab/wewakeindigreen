@@ -552,7 +552,7 @@ export const contactFallback: ContactData = {
       icon: "📍",
       label: "Address",
       value:
-        "Flat No-7, 16/B, Pachimanagari, Kothrud Pune 411052, Maharashtra, India",
+        "Flat No-7, 16/B, Paschimanagari, Kothrud Pune 411052, Maharashtra, India",
     },
     {
       icon: "🕐",
