@@ -37,10 +37,10 @@ export const navbarFallback: NavbarData = {
   links: [
     { label: "About", href: "#about" },
     { label: "Plastic Crisis", href: "#story" },
+    { label: "BioMANS", href: "#biom" },
     { label: "Products", href: "#products" },
-    { label: "Blog", href: "#blog" },
     { label: "Team", href: "#team" },
-    { label: "Vision", href: "#vision" },
+    { label: "Blog", href: "#blog" },
   ],
   ctaLabel: "Contact Us",
   ctaHref: "#contact",
